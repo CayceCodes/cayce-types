@@ -1,19 +1,18 @@
-# my-ts-package
+# SourceLoupe-types
 
 A TypeScript npm package.
 
 ## Installation
 
 ```bash
-npm install my-ts-package
+npm install sourceloupe-types
 ```
 
 ## Usage
 
 ```typescript
-import { greet } from 'my-ts-package';
+import { ScanRule } from 'sourceloupe-types';
 
-console.log(greet('World')); // Output: Hello, World!
 ```
 
 ## Development
