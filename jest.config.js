@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch: ['**/*.test.ts'],
@@ -11,5 +11,6 @@ module.exports = {
       lines: 80,
       statements: 80
     }
-  }
+  },
+  extensionsToTreatAsEsm: ['.ts'],
 };

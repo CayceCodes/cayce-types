@@ -1,5 +1,5 @@
 import { SyntaxNode } from 'tree-sitter';
-import { ScanRule } from './scan-rule';
+import { ScanRule } from './scan-rule.js';
 import SourceFragment from './source-fragment.js';
 
 export abstract class ScanMetric {

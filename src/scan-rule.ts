@@ -34,54 +34,63 @@ import ScanResult from './scan-result.js';
  */
 
 export function message(message: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.Message = message;
   };
 }
 
 export function name(message: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.Name = message;
   };
 }
 
 export function category(category: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.Category = category;
   };
 }
 
 export function query(query: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.Query = query;
   };
 }
 
 export function regex(regex: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.RegEx = regex;
   };
 }
 
 export function suggestion(suggestion: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.Suggestion = suggestion;
   };
 }
 
 export function priority(priority: number) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.Priority = priority;
   };
 }
 
 export function context(context: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.Context = context;
   };
 }
 
 export function resultType(resultType: number) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   return function (target: Function) {
     target.prototype.RuleType = resultType;
   };
@@ -133,6 +142,7 @@ export abstract class ScanRule {
    * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
    * @returns Array of scan results that correspond to the violations or metrics we are interested in
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateNodes(nodes: Array<SyntaxNode>): ScanResult[] {
     return [];
   }
@@ -142,16 +152,18 @@ export abstract class ScanRule {
    * @param node A single node that will be inspected and either scanned for violation(s) or measured for metrics
    * @returns Array of ScanResult instances. Returning more than one allows a rule to cover overlapping use cases
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateNode(node: SyntaxNode): ScanResult[] {
     return [];
   }
 
   /**
-   * This methods applies to use cases that require simple source code metrics: method counts, argument counts, number of DML operations in a class, etc. Normally, it just would call the internal performCount method that does the basic tallying but it can also perform its own manipulation if needed.
-   * @param _nodes A set of nodes that are usually the result of a tree sitter query that apply to some measurement (variable counts, etc.)
+   * This method applies to use cases that require simple source code metrics: method counts, argument counts, number of DML operations in a class, etc. Normally, it just would call the internal performCount method that does the basic tallying but it can also perform its own manipulation if needed.
+   * @param nodes A set of nodes that are usually the result of a tree sitter query that apply to some measurement (variable counts, etc.)
    * @returns
    */
-  measureNodes(_nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  measureNodes(nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
     return new Map<string, SyntaxNode[]>();
   }
 
