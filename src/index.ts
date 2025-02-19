@@ -4,4 +4,18 @@ import { ScanRule, context, message, name, priority, query, regex, suggestion, c
 import { ResultType } from './scan-result.js';
 import { SourceLoupePlugin } from './sourceloupe-plugin.js';
 
-export {ScanResult, SourceFragment, ScanRule, SourceLoupePlugin, ResultType, context, message, name, priority, query, regex, suggestion, category};
+export {
+    ScanResult,
+    SourceFragment,
+    ScanRule,
+    SourceLoupePlugin,
+    ResultType,
+    context,
+    message,
+    name,
+    priority,
+    query,
+    regex,
+    suggestion,
+    category,
+};

@@ -1,10 +1,10 @@
-import ScanResult from "./scan-result.js";
+import ScanResult from './scan-result.js';
 
 export enum OutputFormat {
     Sarif,
     Csv,
     Json,
-    Xml
+    Xml,
 }
 
 export interface Formatter<T> {

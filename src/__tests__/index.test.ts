@@ -2,7 +2,7 @@
 import { ScanResult } from '../index.js';
 
 describe('greet', () => {
-  it('should return greeting with name', () => {
-    expect(true).toBe(true);
-  });
+    it('should return greeting with name', () => {
+        expect(true).toBe(true);
+    });
 });

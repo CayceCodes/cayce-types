@@ -34,13 +34,11 @@ export abstract class SourceLoupePlugin {
     getPackageId(): string {
         try {
             const packagePath = require.resolve('./package.json');
-            const packageDef = JSON.parse(
-                fs.readFileSync(packagePath, 'utf8')
-            );
+            const packageDef = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
             return packageDef.name;
         } catch (error) {
-            console.error("Could not read package.json. Do you have permissions to read it? Is it present?:", error);
-            return "invalid";
+            console.error('Could not read package.json. Do you have permissions to read it? Is it present?:', error);
+            return 'invalid';
         }
     }
 
@@ -51,4 +49,3 @@ export abstract class SourceLoupePlugin {
      */
     abstract getRules(): ScanRule[];
 }
-
