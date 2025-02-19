@@ -112,13 +112,11 @@ export abstract class ScanRule {
     Context!: string;
     SourceCode!: string;
 
+    constructor() {}
+
     /**
      * No constructor needed, although this could change going forward
      */
-    constructor(sourceCode: string) {
-        this.SourceCode = sourceCode;
-    }
-
     /**
      * preFilter(...) This method provides a structured way to manipulate the set of nodes that are consumed downstream if there is a use case that needs more detailed filtering than the ts query language provides
      * @param rawRoot This is passed the root node that results from the initial tree sitter query by the scan manager
