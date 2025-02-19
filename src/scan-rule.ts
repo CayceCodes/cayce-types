@@ -34,158 +34,154 @@ import ScanResult from './scan-result.js';
  */
 
 export function message(message: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.Message = message;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.Message = message;
+    };
 }
 
 export function name(message: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.Name = message;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.Name = message;
+    };
 }
 
 export function category(category: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.Category = category;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.Category = category;
+    };
 }
 
 export function query(query: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.Query = query;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.Query = query;
+    };
 }
 
 export function regex(regex: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.RegEx = regex;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.RegEx = regex;
+    };
 }
 
 export function suggestion(suggestion: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.Suggestion = suggestion;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.Suggestion = suggestion;
+    };
 }
 
 export function priority(priority: number) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.Priority = priority;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.Priority = priority;
+    };
 }
 
 export function context(context: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.Context = context;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.Context = context;
+    };
 }
 
 export function resultType(resultType: number) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  return function (target: Function) {
-    target.prototype.RuleType = resultType;
-  };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    return function (target: Function) {
+        target.prototype.RuleType = resultType;
+    };
 }
 
 /**
  * ScanRule is the base class for all rules, whether they are measuring the nodes within a source module or scanning for violations of code quality rules. It provides a handful of methods that can be overloaded for further processing ihe event that a simple query doesn't cover the use case. These methods are executed at different times during the scan lifecycle and as such provide different methods of filtering and/or manipulating the results
  */
 export abstract class ScanRule {
-  Node!: SyntaxNode;
-  ResultType!: number;
-  Message!: string;
-  Category!: string;
-  Priority!: number;
-  Suggestion!: string;
-  Name!: string;
-  Query!: string;
-  RegEx!: string;
-  Context!: string;
-  SourceCode!: string;
+    Node!: SyntaxNode;
+    ResultType!: number;
+    Message!: string;
+    Category!: string;
+    Priority!: number;
+    Suggestion!: string;
+    Name!: string;
+    Query!: string;
+    RegEx!: string;
+    Context!: string;
+    SourceCode!: string;
 
-  /**
-   * No constructor needed, although this could change going forward
-   */
-  constructor(sourceCode: string) {
-    this.SourceCode = sourceCode;
-  }
+    /**
+     * No constructor needed, although this could change going forward
+     */
+    constructor(sourceCode: string) {
+        this.SourceCode = sourceCode;
+    }
 
-  /**
-   * preFilter(...) This method provides a structured way to manipulate the set of nodes that are consumed downstream if there is a use case that needs more detailed filtering than the ts query language provides
-   * @param rawRoot This is passed the root node that results from the initial tree sitter query by the scan manager
-   */
-  preFilter(rawRoot: SyntaxNode): SyntaxNode {
-    return rawRoot;
-  }
+    /**
+     * preFilter(...) This method provides a structured way to manipulate the set of nodes that are consumed downstream if there is a use case that needs more detailed filtering than the ts query language provides
+     * @param rawRoot This is passed the root node that results from the initial tree sitter query by the scan manager
+     */
+    preFilter(rawRoot: SyntaxNode): SyntaxNode {
+        return rawRoot;
+    }
 
-  /**
-   * Validate the root tree node that is returned as a result of the initial ts query (after it has gone through the prefilter if it has been overriden) Allows for more complicated use cases that could cover disparate nodes or across multiple files.
-   * @param rootNode The root node that is returned from the initial ts query (prefiltered or not, @see `preFilter()`
-   * @returns
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validateRoot(rootNode: SyntaxNode): ScanResult[] {
-    return [];
-  }
+    /**
+     * Validate the root tree node that is returned as a result of the initial ts query (after it has gone through the prefilter if it has been overriden) Allows for more complicated use cases that could cover disparate nodes or across multiple files.
+     * @param rootNode The root node that is returned from the initial ts query (prefiltered or not, @see `preFilter()`
+     * @returns
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    validateRoot(rootNode: SyntaxNode): ScanResult[] {
+        return [];
+    }
 
-  /**
-   * Validate an array of nodes that have been collected as the result of a tree sitter query; this allows for multi-node inspection and multi-result returns.
-   * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
-   * @returns Array of scan results that correspond to the violations or metrics we are interested in
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validateNodes(nodes: Array<SyntaxNode>): ScanResult[] {
-    return [];
-  }
+    /**
+     * Validate an array of nodes that have been collected as the result of a tree sitter query; this allows for multi-node inspection and multi-result returns.
+     * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
+     * @returns Array of scan results that correspond to the violations or metrics we are interested in
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    validateNodes(nodes: Array<SyntaxNode>): ScanResult[] {
+        return [];
+    }
 
-  /**
-   * Inspect a single node for either violations or measurements (counting instances, etc.)
-   * @param node A single node that will be inspected and either scanned for violation(s) or measured for metrics
-   * @returns Array of ScanResult instances. Returning more than one allows a rule to cover overlapping use cases
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validateNode(node: SyntaxNode): ScanResult[] {
-    return [];
-  }
+    /**
+     * Inspect a single node for either violations or measurements (counting instances, etc.)
+     * @param node A single node that will be inspected and either scanned for violation(s) or measured for metrics
+     * @returns Array of ScanResult instances. Returning more than one allows a rule to cover overlapping use cases
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    validateNode(node: SyntaxNode): ScanResult[] {
+        return [];
+    }
 
-  /**
-   * This method applies to use cases that require simple source code metrics: method counts, argument counts, number of DML operations in a class, etc. Normally, it just would call the internal performCount method that does the basic tallying but it can also perform its own manipulation if needed.
-   * @param nodes A set of nodes that are usually the result of a tree sitter query that apply to some measurement (variable counts, etc.)
-   * @returns
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  measureNodes(nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
-    return new Map<string, SyntaxNode[]>();
-  }
+    /**
+     * This method applies to use cases that require simple source code metrics: method counts, argument counts, number of DML operations in a class, etc. Normally, it just would call the internal performCount method that does the basic tallying but it can also perform its own manipulation if needed.
+     * @param nodes A set of nodes that are usually the result of a tree sitter query that apply to some measurement (variable counts, etc.)
+     * @returns
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    measureNodes(nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
+        return new Map<string, SyntaxNode[]>();
+    }
 
-  /**
-   * This method performs the count that provided the information that a measurement operation would be interested in
-   * @param nodes A set of nodes that are generally passed by the public measureNodes method.
-   * @returns A map of node 'grammarType' strings (grammar type is generally the human-readable name of the node, like 'identifier' or 'class_declaration') and their corresponding list of nodes with the same grammar type.
-   *
-   * This allows the collection to be used flexibly: grab the array length and the key (grammar type), and you have easy access to the basic counts. Dive further into the array, and you can access the source code location, the descendents, etc.
-   */
-  private performCount(nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
-    const resultMap: Map<string, SyntaxNode[]> = new Map<
-      string,
-      SyntaxNode[]
-    >();
+    /**
+     * This method performs the count that provided the information that a measurement operation would be interested in
+     * @param nodes A set of nodes that are generally passed by the public measureNodes method.
+     * @returns A map of node 'grammarType' strings (grammar type is generally the human-readable name of the node, like 'identifier' or 'class_declaration') and their corresponding list of nodes with the same grammar type.
+     *
+     * This allows the collection to be used flexibly: grab the array length and the key (grammar type), and you have easy access to the basic counts. Dive further into the array, and you can access the source code location, the descendents, etc.
+     */
+    private performCount(nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
+        const resultMap: Map<string, SyntaxNode[]> = new Map<string, SyntaxNode[]>();
 
-    nodes.forEach((nodeItem) => {
-      const resultEntry: SyntaxNode[] =
-        resultMap.get(nodeItem.grammarType) ?? [];
-      resultEntry.push(nodeItem);
-      resultMap.set(nodeItem.grammarType, resultEntry);
-    });
-    return resultMap;
-  }
+        nodes.forEach((nodeItem) => {
+            const resultEntry: SyntaxNode[] = resultMap.get(nodeItem.grammarType) ?? [];
+            resultEntry.push(nodeItem);
+            resultMap.set(nodeItem.grammarType, resultEntry);
+        });
+        return resultMap;
+    }
 }
