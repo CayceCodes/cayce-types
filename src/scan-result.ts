@@ -22,7 +22,6 @@ export default class ScanResult implements ScanMetric {
     readonly sourceCode: string;
     private metadata: Array<string>;
     readonly result: ResultType;
-    readonly grammarType: string;
     /**
      * constructor Doesn't do anything special other than initialize the various fields
      * @param rule
@@ -35,11 +34,7 @@ export default class ScanResult implements ScanMetric {
         this.sourceCode = rule.SourceCode;
         this.rule = rule;
         this.metadata = metadata ?? [];
-        this.grammarType = rule.Node.grammarType;
         this.result = ResultType.INFORMATION;
-        for (const element of this.metadata) {
-            this.rule.Message = this.rule.Message.replace(`%${element[0]}%`, `${element[1]}`);
-        }
     }
 }
 

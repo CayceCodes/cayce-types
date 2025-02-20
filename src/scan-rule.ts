@@ -1,4 +1,4 @@
-import { SyntaxNode } from 'tree-sitter';
+import { QueryCapture, SyntaxNode } from 'tree-sitter';
 import ScanResult from './scan-result.js';
 
 // type alias to restrict Function to something that returns a ScanRule
@@ -100,6 +100,7 @@ export function resultType(resultType: number) {
  * ScanRule is the base class for all rules, whether they are measuring the nodes within a source module or scanning for violations of code quality rules. It provides a handful of methods that can be overloaded for further processing ihe event that a simple query doesn't cover the use case. These methods are executed at different times during the scan lifecycle and as such provide different methods of filtering and/or manipulating the results
  */
 export abstract class ScanRule {
+    
     Node!: SyntaxNode;
     ResultType!: number;
     Message!: string;
@@ -112,7 +113,30 @@ export abstract class ScanRule {
     Context!: string;
     SourceCode!: string;
 
-    constructor() {}
+    private configuration: Map<string,string>;
+
+    setConfiguration(config:Map<string,string>){
+        this.configuration = config;
+    }
+
+    getConfiguration():config:Map<string,string>{
+        return this.configuration;
+    }
+
+    getConfigurationValue(keyName: string): string{
+        if(!this.configuration.has(keyName){
+            return '';
+        }
+        return this.configuration.get(keyName) ?? '';
+    }
+
+    setConfigurationValue(keyName: string, value: string): void{
+        this.configuration.set(keyName, value);
+    }
+
+    constructor() {
+        this.configuration = new Map<string,string>();
+    }
 
     /**
      * No constructor needed, although this could change going forward
@@ -135,6 +159,7 @@ export abstract class ScanRule {
         return [];
     }
 
+    
     /**
      * Validate an array of nodes that have been collected as the result of a tree sitter query; this allows for multi-node inspection and multi-result returns.
      * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
@@ -142,6 +167,17 @@ export abstract class ScanRule {
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     validateNodes(nodes: Array<SyntaxNode>): ScanResult[] {
+        return [];
+    }
+
+    
+    /**
+     * Validate an array of nodes that have been collected as the result of a tree sitter query; this allows for multi-node inspection and multi-result returns.
+     * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
+     * @returns Array of scan results that correspond to the violations or metrics we are interested in
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    validateCaptures(nodes: Array<QueryCapture>): ScanResult[] {
         return [];
     }
 
@@ -182,4 +218,5 @@ export abstract class ScanRule {
         });
         return resultMap;
     }
+        
 }
