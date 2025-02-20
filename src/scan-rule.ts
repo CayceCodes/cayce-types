@@ -119,12 +119,12 @@ export abstract class ScanRule {
         this.configuration = config;
     }
 
-    getConfiguration():config:Map<string,string>{
+    getConfiguration():Map<string,string>{
         return this.configuration;
     }
 
     getConfigurationValue(keyName: string): string{
-        if(!this.configuration.has(keyName){
+        if(!this.configuration.has(keyName)){
             return '';
         }
         return this.configuration.get(keyName) ?? '';
