@@ -1,6 +1,5 @@
 import { SyntaxNode } from 'tree-sitter';
 import { ScanRule } from './scan-rule.js';
-import SourceFragment from './source-fragment.js';
 
 export abstract class ScanMetric {
     result: ResultType;
@@ -19,7 +18,6 @@ export abstract class ScanMetric {
  */
 export default class ScanResult implements ScanMetric {
     readonly rule: ScanRule;
-    readonly fragment: SourceFragment;
     readonly sourceNode: SyntaxNode;
     readonly sourceCode: string;
     private metadata: Array<string>;
@@ -36,7 +34,6 @@ export default class ScanResult implements ScanMetric {
         this.sourceNode = rule.Node;
         this.sourceCode = rule.SourceCode;
         this.rule = rule;
-        this.fragment = new SourceFragment(rule.Node, this.sourceCode);
         this.metadata = metadata ?? [];
         this.grammarType = rule.Node.grammarType;
         this.result = ResultType.INFORMATION;
