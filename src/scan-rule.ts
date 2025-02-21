@@ -1,5 +1,6 @@
 import Parser, { QueryCapture, QueryMatch, SyntaxNode } from 'tree-sitter';
 import ScanResult from './scan-result.js';
+import * as TreeSitter from 'tree-sitter';
 
 // type alias to restrict Function to something that returns a ScanRule
 // type ScanRuleConstructor = abstract new () => ScanRule;
@@ -178,8 +179,7 @@ export abstract class ScanRule {
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateCaptures(captures: Array<QueryCapture>, targetCaptureName?: string): Parser.SyntaxNode[] {
-
+    private validateCaptures(captures: Array<QueryCapture>, targetCaptureName?: string): Parser.SyntaxNode[] {
         const results: Parser.SyntaxNode[] = [];
         const captureName: string = targetCaptureName ?? 'target';
         results.push(...captures
@@ -189,7 +189,7 @@ export abstract class ScanRule {
     }
 
     /**
-     * Validate an array of matches.Consider the following TS query:
+     * Validate an array of matches or captures for a query.Consider the following TS query:
      * `(argument_list `
      *  `   (formal_parameter name:(identifier) @firstarg) (#match? @firstarg "<regexp>")`
      *  `   (formal_parameter name:(identifier) @secondarg) (#match? @secondarg "<regexp>"))`
@@ -198,27 +198,26 @@ export abstract class ScanRule {
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateMatches(matches: Array<QueryMatch>, targetMatchIndex?: number, targetCaptureName?: string): Parser.SyntaxNode[] {
+    validateQuery(query: TreeSitter.Query, rootNode: Parser.SyntaxNode, targetCaptureName?: string, targetMatchIndex?: number): Parser.SyntaxNode[] {
         
         const results: Parser.SyntaxNode[] = [];
         // -1 means give me all nodes for all matches
-        const patternIndex: number = targetMatchIndex ?? 0;
+        const patternIndex: number = targetMatchIndex ?? -1;
+        // Default capture group is named @target
+        const captureName: string = targetCaptureName ?? "target";
+        const matches: QueryMatch[] = query.matches(rootNode);
+        const captures: QueryCapture[] = query.captures(rootNode);
+        if(targetMatchIndex == -1){
+            return this.validateCaptures(captures,captureName);
+        }
         matches.forEach(matchIteration=>{
-            if(matchIteration.pattern == -1){
-                results.push(...matchIteration.captures
-                    .filter(captureIteration=>captureIteration.name === (targetCaptureName ?? 'target'))
-                    .map(captureIteration=>{return captureIteration.node;}));
-            }
-            else{
                 if(matchIteration.pattern == patternIndex){
-                    const capturePatternName: string = targetCaptureName ?? "target";
                     results.push(...matchIteration.captures
-                        .filter(captureIteration=>captureIteration.name === capturePatternName)
+                        .filter(captureIteration=>captureIteration.name === captureName)
                         .map(captureIteration=>{return captureIteration.node}));
 
                 }
-            }
-        })
+        });
         return results;
     }
 
