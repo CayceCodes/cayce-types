@@ -189,6 +189,7 @@ export abstract class ScanRule {
     }
 
     /**
+     * NOTE: All validate methods will be deprecated. This should be the primary entry point for rules going forward.
      * Validate an array of matches or captures for a query.Consider the following TS query:
      * `(argument_list `
      *  `   (formal_parameter name:(identifier) @firstarg) (#match? @firstarg "<regexp>")`
