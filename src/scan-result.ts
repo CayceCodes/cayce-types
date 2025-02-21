@@ -1,4 +1,4 @@
-import { SyntaxNode } from 'tree-sitter';
+import Parser, { SyntaxNode } from 'tree-sitter';
 import { ScanRule } from './scan-rule.js';
 
 export abstract class ScanMetric {
@@ -29,12 +29,12 @@ export default class ScanResult implements ScanMetric {
      * @param metadata
      * @see `ScanResult.metadata`
      */
-    constructor(rule: ScanRule, resultType: ResultType, metadata?: Array<string>) {
+    constructor(rule: ScanRule, resultType?: ResultType, targetNode?: Parser.SyntaxNode, metadata?: Array<string>) {
         this.sourceNode = rule.Node;
         this.sourceCode = rule.SourceCode;
         this.rule = rule;
+        this.result = resultType ?? ResultType.VIOLATION;
         this.metadata = metadata ?? [];
-        this.result = ResultType.INFORMATION;
     }
 }
 
