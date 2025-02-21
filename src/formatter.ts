@@ -8,7 +8,7 @@ export enum OutputFormat {
 }
 
 export interface Formatter<T> {
-    format(scanResultsMap: Map<string, ScanResult[]>, outputFormat: T): string;
+    format(scanResults: ScanResult[], outputFormat: T): string;
     supportsOutputFormat(outputFormatType: OutputFormat): boolean;
 
     getSupportedOutputFormats(): OutputFormat[];
