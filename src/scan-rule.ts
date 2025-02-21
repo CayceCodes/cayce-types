@@ -182,9 +182,13 @@ export abstract class ScanRule {
     private validateCaptures(captures: Array<QueryCapture>, targetCaptureName?: string): Parser.SyntaxNode[] {
         const results: Parser.SyntaxNode[] = [];
         const captureName: string = targetCaptureName ?? 'target';
-        results.push(...captures
-            .filter(captureIteration=>captureIteration.name === captureName)
-            .map(captureIteration=>{return captureIteration.node}));
+        results.push(
+            ...captures
+                .filter((captureIteration) => captureIteration.name === captureName)
+                .map((captureIteration) => {
+                    return captureIteration.node;
+                })
+        );
         return results;
     }
 
@@ -199,25 +203,32 @@ export abstract class ScanRule {
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateQuery(query: TreeSitter.Query, rootNode: Parser.SyntaxNode, targetCaptureName?: string, targetMatchIndex?: number): Parser.SyntaxNode[] {
-        
+    validateQuery(
+        query: TreeSitter.Query,
+        rootNode: Parser.SyntaxNode,
+        targetCaptureName?: string,
+        targetMatchIndex?: number
+    ): Parser.SyntaxNode[] {
         const results: Parser.SyntaxNode[] = [];
         // -1 means give me all nodes for all matches
         const patternIndex: number = targetMatchIndex ?? -1;
         // Default capture group is named @target
-        const captureName: string = targetCaptureName ?? "target";
+        const captureName: string = targetCaptureName ?? 'target';
         const matches: QueryMatch[] = query.matches(rootNode);
         const captures: QueryCapture[] = query.captures(rootNode);
-        if(targetMatchIndex == -1){
-            return this.validateCaptures(captures,captureName);
+        if (targetMatchIndex == -1) {
+            return this.validateCaptures(captures, captureName);
         }
-        matches.forEach(matchIteration=>{
-                if(matchIteration.pattern == patternIndex){
-                    results.push(...matchIteration.captures
-                        .filter(captureIteration=>captureIteration.name === captureName)
-                        .map(captureIteration=>{return captureIteration.node}));
-
-                }
+        matches.forEach((matchIteration) => {
+            if (matchIteration.pattern == patternIndex) {
+                results.push(
+                    ...matchIteration.captures
+                        .filter((captureIteration) => captureIteration.name === captureName)
+                        .map((captureIteration) => {
+                            return captureIteration.node;
+                        })
+                );
+            }
         });
         return results;
     }
