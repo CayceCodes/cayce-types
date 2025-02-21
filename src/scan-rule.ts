@@ -1,5 +1,6 @@
-import { QueryCapture, SyntaxNode } from 'tree-sitter';
+import Parser, { QueryCapture, QueryMatch, SyntaxNode } from 'tree-sitter';
 import ScanResult from './scan-result.js';
+import * as TreeSitter from 'tree-sitter';
 
 // type alias to restrict Function to something that returns a ScanRule
 // type ScanRuleConstructor = abstract new () => ScanRule;
@@ -154,8 +155,8 @@ export abstract class ScanRule {
      * @returns
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateRoot(rootNode: SyntaxNode): ScanResult[] {
-        return [];
+    validateRoot(rootNode: SyntaxNode): SyntaxNode {
+        return rootNode;
     }
 
     /**
@@ -169,13 +170,56 @@ export abstract class ScanRule {
     }
 
     /**
-     * Validate an array of nodes that have been collected as the result of a tree sitter query; this allows for multi-node inspection and multi-result returns.
+     * Validate an array of captures.Consider the following TS query:
+     * `(class_declaration name:(identifier) @classname) @classdeclaration`
+     * In this example, `@classname` and `@classdeclaration` are both 'captures.' That way they can be individually referenced as their respective nodes.
+     * `@classname` would correspond to the name of the class, because we selected the identifier tagged as 'name' and assigned it that capture name.
+     * `@classdeclaration` is the actual full line that defines the class, including access modifiers, annotations, and interfaces/superclasses. All of those things are accessible as children of the definition.
      * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateCaptures(nodes: Array<QueryCapture>): ScanResult[] {
-        return [];
+    private validateCaptures(captures: Array<QueryCapture>, targetCaptureName?: string): Parser.SyntaxNode[] {
+        const results: Parser.SyntaxNode[] = [];
+        const captureName: string = targetCaptureName ?? 'target';
+        results.push(...captures
+            .filter(captureIteration=>captureIteration.name === captureName)
+            .map(captureIteration=>{return captureIteration.node}));
+        return results;
+    }
+
+    /**
+     * NOTE: All validate methods will be deprecated. This should be the primary entry point for rules going forward.
+     * Validate an array of matches or captures for a query.Consider the following TS query:
+     * `(argument_list `
+     *  `   (formal_parameter name:(identifier) @firstarg) (#match? @firstarg "<regexp>")`
+     *  `   (formal_parameter name:(identifier) @secondarg) (#match? @secondarg "<regexp>"))`
+     * Here, there are two 'match' predecates that can be addressed seperately via their id (index). Those matches have captures underneath them, which functionn as above.
+     * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
+     * @returns Array of scan results that correspond to the violations or metrics we are interested in
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    validateQuery(query: TreeSitter.Query, rootNode: Parser.SyntaxNode, targetCaptureName?: string, targetMatchIndex?: number): Parser.SyntaxNode[] {
+        
+        const results: Parser.SyntaxNode[] = [];
+        // -1 means give me all nodes for all matches
+        const patternIndex: number = targetMatchIndex ?? -1;
+        // Default capture group is named @target
+        const captureName: string = targetCaptureName ?? "target";
+        const matches: QueryMatch[] = query.matches(rootNode);
+        const captures: QueryCapture[] = query.captures(rootNode);
+        if(targetMatchIndex == -1){
+            return this.validateCaptures(captures,captureName);
+        }
+        matches.forEach(matchIteration=>{
+                if(matchIteration.pattern == patternIndex){
+                    results.push(...matchIteration.captures
+                        .filter(captureIteration=>captureIteration.name === captureName)
+                        .map(captureIteration=>{return captureIteration.node}));
+
+                }
+        });
+        return results;
     }
 
     /**
