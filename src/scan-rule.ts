@@ -1,4 +1,5 @@
 import Parser, { QueryCapture, QueryMatch, SyntaxNode } from 'tree-sitter';
+import ScanRuleProperties from './scan-rule-properties.js';
 import ScanResult from './scan-result.js';
 import * as TreeSitter from 'tree-sitter';
 
@@ -35,72 +36,63 @@ import * as TreeSitter from 'tree-sitter';
  */
 
 export function message(message: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
+    return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.Message = message;
     };
 }
 
 export function name(message: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
+    return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.Name = message;
     };
 }
 
 export function category(category: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
+    return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.Category = category;
     };
 }
 
 export function query(query: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
+    return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.Query = query;
     };
 }
 
 export function regex(regex: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
+    return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.RegEx = regex;
     };
 }
 
 export function suggestion(suggestion: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
+    return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.Suggestion = suggestion;
     };
 }
 
 export function priority(priority: number) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
+    return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.Priority = priority;
     };
 }
 
 export function context(context: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
+    return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.Context = context;
     };
 }
 
 export function resultType(resultType: number) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    return function (target: Function) {
-        target.prototype.RuleType = resultType;
+    return function (target: { prototype: ScanRuleProperties }) {
+        target.prototype.ResultType = resultType;
     };
 }
 
 /**
  * ScanRule is the base class for all rules, whether they are measuring the nodes within a source module or scanning for violations of code quality rules. It provides a handful of methods that can be overloaded for further processing ihe event that a simple query doesn't cover the use case. These methods are executed at different times during the scan lifecycle and as such provide different methods of filtering and/or manipulating the results
  */
-export abstract class ScanRule {
+export abstract class ScanRule implements ScanRuleProperties {
     Node!: SyntaxNode;
     ResultType!: number;
     Message!: string;
@@ -154,7 +146,6 @@ export abstract class ScanRule {
      * @param rootNode The root node that is returned from the initial ts query (prefiltered or not, @see `preFilter()`
      * @returns
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     validateRoot(rootNode: SyntaxNode): SyntaxNode {
         return rootNode;
     }
@@ -164,8 +155,7 @@ export abstract class ScanRule {
      * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateNodes(nodes: Array<SyntaxNode>): ScanResult[] {
+    validateNodes(_nodes: SyntaxNode[]): ScanResult[] {
         return [];
     }
 
@@ -178,8 +168,7 @@ export abstract class ScanRule {
      * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private validateCaptures(captures: Array<QueryCapture>, targetCaptureName?: string): Parser.SyntaxNode[] {
+    private validateCaptures(captures: QueryCapture[], targetCaptureName?: string): Parser.SyntaxNode[] {
         const results: Parser.SyntaxNode[] = [];
         const captureName: string = targetCaptureName ?? 'target';
         results.push(
@@ -202,7 +191,6 @@ export abstract class ScanRule {
      * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     validateQuery(
         query: TreeSitter.Query,
         rootNode: Parser.SyntaxNode,

@@ -18,5 +18,5 @@ export {
     suggestion,
     category,
     Formatter,
-    OutputFormat
+    OutputFormat,
 };

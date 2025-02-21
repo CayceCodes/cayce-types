@@ -1,5 +1,6 @@
 import { ScanRule } from './scan-rule.js';
 import * as fs from 'node:fs';
+import { JSONObject } from './json-object.js';
 
 /**
  * This class defines the interface for a SourceLoupe plugin. Currently this supports two types of information:
@@ -33,9 +34,9 @@ export abstract class SourceLoupePlugin {
      */
     getPackageId(): string {
         try {
-            const packagePath = require.resolve('./package.json');
-            const packageDef = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-            return packageDef.name;
+            const packagePath: string = require.resolve('./package.json');
+            const packageDef: JSONObject = JSON.parse(fs.readFileSync(packagePath, 'utf8')) as JSONObject;
+            return packageDef.name as string;
         } catch (error) {
             console.error('Could not read package.json. Do you have permissions to read it? Is it present?:', error);
             return 'invalid';

@@ -20,7 +20,7 @@ export default class ScanResult implements ScanMetric {
     readonly rule: ScanRule;
     readonly sourceNode: Parser.SyntaxNode;
     readonly sourceCode: string;
-    private metadata: Array<string>;
+    private metadata: string[];
     readonly result: ResultType;
     /**
      * constructor Doesn't do anything special other than initialize the various fields
@@ -29,7 +29,7 @@ export default class ScanResult implements ScanMetric {
      * @param metadata
      * @see `ScanResult.metadata`
      */
-    constructor(rule: ScanRule, resultType?: ResultType, targetNode?: Parser.SyntaxNode, metadata?: Array<string>) {
+    constructor(rule: ScanRule, resultType?: ResultType, targetNode?: Parser.SyntaxNode, metadata?: string[]) {
         this.sourceNode = targetNode ?? rule.Node;
         this.sourceCode = rule.SourceCode;
         this.rule = rule;
