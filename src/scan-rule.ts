@@ -1,4 +1,4 @@
-import { QueryCapture, SyntaxNode } from 'tree-sitter';
+import Parser, { QueryCapture, QueryMatch, SyntaxNode } from 'tree-sitter';
 import ScanResult from './scan-result.js';
 
 // type alias to restrict Function to something that returns a ScanRule
@@ -169,12 +169,30 @@ export abstract class ScanRule {
     }
 
     /**
-     * Validate an array of nodes that have been collected as the result of a tree sitter query; this allows for multi-node inspection and multi-result returns.
+     * Validate an array of captures.Consider the following TS query:
+     * `(class_declaration name:(identifier) @classname) @classdeclaration`
+     * In this example, `@classname` and `@classdeclaration` are both 'captures.' That way they can be individually referenced as their respective nodes.
+     * `@classname` would correspond to the name of the class, because we selected the identifier tagged as 'name' and assigned it that capture name.
+     * `@classdeclaration` is the actual full line that defines the class, including access modifiers, annotations, and interfaces/superclasses. All of those things are accessible as children of the definition.
      * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateCaptures(nodes: Array<QueryCapture>): ScanResult[] {
+    validateCaptures(nodes: Array<QueryCapture>): Parser.SyntaxNode[] {
+        return [];
+    }
+
+    /**
+     * Validate an array of matches.Consider the following TS query:
+     * (argument_list 
+     *      (formal_parameter name:(identifier) @firstarg) (#match? @firstarg "<regexp>")
+     *      (formal_parameter name:(identifier) @secondarg) (#match? @secondarg "<regexp>"))
+     * Here, there are two 'match' predecates that can be addressed seperately via their id (index). Those matches have captures underneath them, which functionn as above.
+     * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
+     * @returns Array of scan results that correspond to the violations or metrics we are interested in
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    validateMatches(nodes: Array<QueryMatch>): Parser.SyntaxNode[] {
         return [];
     }
 

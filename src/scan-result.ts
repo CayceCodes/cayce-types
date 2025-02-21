@@ -18,7 +18,7 @@ export abstract class ScanMetric {
  */
 export default class ScanResult implements ScanMetric {
     readonly rule: ScanRule;
-    readonly sourceNode: SyntaxNode;
+    readonly sourceNode: Parser.SyntaxNode;
     readonly sourceCode: string;
     private metadata: Array<string>;
     readonly result: ResultType;
@@ -30,7 +30,7 @@ export default class ScanResult implements ScanMetric {
      * @see `ScanResult.metadata`
      */
     constructor(rule: ScanRule, resultType?: ResultType, targetNode?: Parser.SyntaxNode, metadata?: Array<string>) {
-        this.sourceNode = rule.Node;
+        this.sourceNode = targetNode ?? rule.Node;
         this.sourceCode = rule.SourceCode;
         this.rule = rule;
         this.result = resultType ?? ResultType.VIOLATION;
