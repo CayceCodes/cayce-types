@@ -1,4 +1,4 @@
-import { ResultType } from "./scan-result.js";
+import { ResultType } from './scan-result.js';
 
 /**
  * ScanRuleConfig this interface defines the *configuration* propoerties of a scan rule.
