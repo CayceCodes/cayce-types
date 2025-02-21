@@ -155,8 +155,8 @@ export abstract class ScanRule {
      * @returns
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateRoot(rootNode: SyntaxNode): ScanResult[] {
-        return [];
+    validateRoot(rootNode: SyntaxNode): SyntaxNode {
+        return rootNode;
     }
 
     /**
