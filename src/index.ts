@@ -3,6 +3,7 @@ import { ScanRule, context, message, name, priority, query, regex, suggestion, c
 import { ResultType } from './scan-result.js';
 import { SourceLoupePlugin } from './sourceloupe-plugin.js';
 import { Formatter, OutputFormat } from './formatter.js';
+import { CSVFormatter } from './csv-formatter.js';
 
 export {
     ScanResult,
@@ -19,4 +20,5 @@ export {
     category,
     Formatter,
     OutputFormat,
+    CSVFormatter,
 };
