@@ -178,22 +178,48 @@ export abstract class ScanRule {
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateCaptures(nodes: Array<QueryCapture>): Parser.SyntaxNode[] {
-        return [];
+    validateCaptures(captures: Array<QueryCapture>, targetCaptureName?: string): Parser.SyntaxNode[] {
+
+        const results: Parser.SyntaxNode[] = [];
+        const captureName: string = targetCaptureName ?? 'target';
+        results.push(...captures
+            .filter(captureIteration=>captureIteration.name === captureName)
+            .map(captureIteration=>{return captureIteration.node}));
+        return results;
     }
 
     /**
      * Validate an array of matches.Consider the following TS query:
-     * (argument_list 
-     *      (formal_parameter name:(identifier) @firstarg) (#match? @firstarg "<regexp>")
-     *      (formal_parameter name:(identifier) @secondarg) (#match? @secondarg "<regexp>"))
+     * `(argument_list `
+     *  `   (formal_parameter name:(identifier) @firstarg) (#match? @firstarg "<regexp>")`
+     *  `   (formal_parameter name:(identifier) @secondarg) (#match? @secondarg "<regexp>"))`
      * Here, there are two 'match' predecates that can be addressed seperately via their id (index). Those matches have captures underneath them, which functionn as above.
      * @param nodes A collection of nodes that have been returned via a ts query after being optionally filtered via preFilter
      * @returns Array of scan results that correspond to the violations or metrics we are interested in
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    validateMatches(nodes: Array<QueryMatch>): Parser.SyntaxNode[] {
-        return [];
+    validateMatches(matches: Array<QueryMatch>, targetMatchIndex?: number, targetCaptureName?: string): Parser.SyntaxNode[] {
+        
+        const results: Parser.SyntaxNode[] = [];
+        // -1 means give me all nodes for all matches
+        const patternIndex: number = targetMatchIndex ?? 0;
+        matches.forEach(matchIteration=>{
+            if(matchIteration.pattern == -1){
+                results.push(...matchIteration.captures
+                    .filter(captureIteration=>captureIteration.name === (targetCaptureName ?? 'target'))
+                    .map(captureIteration=>{return captureIteration.node;}));
+            }
+            else{
+                if(matchIteration.pattern == patternIndex){
+                    const capturePatternName: string = targetCaptureName ?? "target";
+                    results.push(...matchIteration.captures
+                        .filter(captureIteration=>captureIteration.name === capturePatternName)
+                        .map(captureIteration=>{return captureIteration.node}));
+
+                }
+            }
+        })
+        return results;
     }
 
     /**
