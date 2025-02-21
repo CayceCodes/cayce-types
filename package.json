@@ -1,6 +1,6 @@
 {
   "name": "sourceloupe-types",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "type": "module",
   "description": "A TypeScript npm package",
   "main": "dist/index.js",
