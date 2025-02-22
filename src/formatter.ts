@@ -5,6 +5,7 @@ export enum OutputFormat {
     Csv,
     Json,
     Xml,
+    Sarifv2,
 }
 
 export interface Formatter<T> {

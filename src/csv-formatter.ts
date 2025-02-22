@@ -1,7 +1,7 @@
 import { Formatter, OutputFormat } from './formatter.js';
 import ScanResult, { ResultType } from './scan-result.js';
 
-export class CSVFormatter<T> implements Formatter<T> {
+export class CsvFormatter<T> implements Formatter<T> {
     private output: string[] = [];
 
     getName(): string {
