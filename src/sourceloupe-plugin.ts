@@ -2,6 +2,11 @@ import { ScanRule } from './scan-rule.js';
 import * as fs from 'node:fs';
 import { JSONObject } from './json-object.js';
 
+export interface SourceLoupePlugin {
+    getRules(): ScanRule[];
+    getPackageId(): string;
+}
+
 /**
  * This class defines the interface for a SourceLoupe plugin. Currently this supports two types of information:
  *
@@ -27,7 +32,7 @@ import { JSONObject } from './json-object.js';
  *  1. You must export your class as default for the plugin loader to work.
  *
  */
-export abstract class SourceLoupePlugin {
+export abstract class SourceLoupeBasePlugin implements SourceLoupePlugin {
     /**
      * This method is used to get the package name of the plugin. It reads the package.json file of the plugin
      * @returns {string}
