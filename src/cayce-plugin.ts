@@ -2,16 +2,16 @@ import { ScanRule } from './scan-rule.js';
 import * as fs from 'node:fs';
 import { JSONObject } from './json-object.js';
 
-export interface SourceLoupePlugin {
+export interface CaycePlugin {
     getRules(): ScanRule[];
     getPackageId(): string;
 }
 
 /**
- * This class defines the interface for a SourceLoupe plugin. Currently this supports two types of information:
+ * This class defines the interface for a Cayce plugin. Currently, this supports two types of information:
  *
- * 1. The package name of the plugin - This is provided by us - Sourceloupe maintainers - and is used to surface
- * the plugin's pacakge name to the SourceLoupe CLI and Engine. It uses the package.json file of the plugin and
+ * 1. The package name of the plugin - This is provided by us - Cayce maintainers - and is used to surface
+ * the plugin's package name to the Cayce CLI and Engine. It uses the package.json file of the plugin and
  * reads the name field to get the package name. *** Note: Developers creating plugins do not need to implement
  * this function, as the abstract class below contains the method used to grab the package name.
  *
@@ -20,8 +20,8 @@ export interface SourceLoupePlugin {
  * for filtering included rules.
  *
  * Here's how you can implement this class:
- * ```typescript
- * export default class MyRules extends SourceLoupePlugin {
+ * ```TypeScript
+ * export default class MyRules extends CayceBasePlugin implements CaycePlugin {
  *     getRules(): ScanRule[] {
  *         (...) // Your rules here
  *     }
@@ -30,9 +30,10 @@ export interface SourceLoupePlugin {
  *
  * Notes:
  *  1. You must export your class as default for the plugin loader to work.
+ *  2. Your package must be configured to generate an ESM module.
  *
  */
-export abstract class SourceLoupeBasePlugin implements SourceLoupePlugin {
+export abstract class CayceBasePlugin implements CaycePlugin {
     /**
      * This method is used to get the package name of the plugin. It reads the package.json file of the plugin
      * @returns {string}

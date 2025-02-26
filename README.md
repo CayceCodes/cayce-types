@@ -1,17 +1,17 @@
-# SourceLoupe-types
+# cayce-types
 
-A TypeScript npm package.
+Shared types for Cayce—an Opinionated Static Analysis Tool based on TreeSitter.
 
 ## Installation
 
 ```bash
-npm install sourceloupe-types
+npm install cayce-types
 ```
 
 ## Usage
 
 ```typescript
-import { ScanRule } from 'sourceloupe-types';
+import { ScanRule } from 'cayce-types';
 
 ```
 

@@ -1,18 +1,18 @@
 import ScanResult from './scan-result.js';
 import { ScanRule, context, message, name, priority, query, regex, suggestion, category } from './scan-rule.js';
 import { ResultType } from './scan-result.js';
-import { SourceLoupePlugin, SourceLoupeBasePlugin } from './sourceloupe-plugin.js';
+import { CaycePlugin, CayceBasePlugin } from './cayce-plugin.js';
 import { Formatter, OutputFormat } from './formatter.js';
-import { CsvFormatter } from './csv-formatter.js';
-import { JsonFormatter } from './json-formatter.js';
-import { SarifFormatter } from './sarif-formatter.js';
-import { XmlFormatter } from './xml-formatter.js';
+import { CsvFormatter } from './formatters/csv-formatter.js';
+import { JsonFormatter } from './formatters/json-formatter.js';
+import { SarifFormatter } from './formatters/sarif-formatter.js';
+import { XmlFormatter } from './formatters/xml-formatter.js';
 
 export {
     ScanResult,
     ScanRule,
-    SourceLoupePlugin,
-    SourceLoupeBasePlugin,
+    CaycePlugin,
+    CayceBasePlugin,
     ResultType,
     context,
     message,

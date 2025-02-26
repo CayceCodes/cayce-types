@@ -1,5 +1,5 @@
-import { Formatter, OutputFormat } from './formatter.js';
-import ScanResult, { ResultType } from './scan-result.js';
+import { Formatter, OutputFormat } from '../formatter.js';
+import ScanResult, { ResultType } from '../scan-result.js';
 
 export class CsvFormatter<T> implements Formatter<T> {
     private output: string[] = [];

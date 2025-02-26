@@ -1,5 +1,5 @@
-import { Formatter, OutputFormat } from './formatter.js';
-import ScanResult from './scan-result.js';
+import { Formatter, OutputFormat } from '../formatter.js';
+import ScanResult from '../scan-result.js';
 
 export class SarifFormatter implements Formatter<OutputFormat.Sarif | OutputFormat.Sarifv2> {
     format(scanResults: ScanResult[], _outputFormat: OutputFormat.Sarif | OutputFormat.Sarifv2): string {
@@ -12,8 +12,8 @@ export class SarifFormatter implements Formatter<OutputFormat.Sarif | OutputForm
                 {
                     tool: {
                         driver: {
-                            name: 'SourceLoupe',
-                            informationUri: 'https://sourceloupe.com',
+                            name: 'Cayce',
+                            informationUri: 'https://github.com/cayce/cayce-core',
                             rules: [],
                         },
                     },

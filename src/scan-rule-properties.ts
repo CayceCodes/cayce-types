@@ -1,7 +1,8 @@
 import { ResultType } from './scan-result.js';
 
 /**
- * ScanRuleConfig this interface defines the *configuration* propoerties of a scan rule.
+ * This interface is responsible for defining the *configuration* properties of a scan rule.
+ * These properties are all exposed via ScanRule as decorators.
  */
 export default interface ScanRuleProperties {
     Name: string;

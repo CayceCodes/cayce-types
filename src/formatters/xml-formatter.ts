@@ -1,6 +1,6 @@
-import { Formatter, OutputFormat } from './formatter.js';
-import { JSONObject } from './json-object.js';
-import ScanResult from './scan-result.js';
+import { Formatter, OutputFormat } from '../formatter.js';
+import { JSONObject } from '../json-object.js';
+import ScanResult from '../scan-result.js';
 
 export class XmlFormatter implements Formatter<OutputFormat.Xml> {
     format(scanResults: ScanResult[], _outputFormat: OutputFormat.Xml): string {

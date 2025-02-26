@@ -1,5 +1,5 @@
-import { Formatter, OutputFormat } from './formatter.js';
-import ScanResult from './scan-result.js';
+import { Formatter, OutputFormat } from '../formatter.js';
+import ScanResult from '../scan-result.js';
 
 export class JsonFormatter implements Formatter<OutputFormat.Json> {
     format(scanResults: ScanResult[], _outputFormat: OutputFormat.Json): string {
