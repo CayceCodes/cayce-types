@@ -176,8 +176,9 @@ export abstract class ScanRule implements ScanRuleProperties {
      */
     private validateCaptures(captures: QueryCapture[], targetCaptureName?: string): Parser.SyntaxNode[] {
         const results: Parser.SyntaxNode[] = [];
-        captures.filter(capture => capture.name === (targetCaptureName ?? 'target'))
-                .forEach(capture => results.push(capture.node));
+        captures
+            .filter((capture) => capture.name === (targetCaptureName ?? 'target'))
+            .forEach((capture) => results.push(capture.node));
         return results;
     }
 
@@ -196,10 +197,11 @@ export abstract class ScanRule implements ScanRuleProperties {
         if (targetMatchIndex === -1) {
             return this.validateCaptures(query.captures(rootNode), targetCaptureName);
         }
-        matches.filter(match => match.pattern === targetMatchIndex)
-               .flatMap(match => match.captures)
-               .filter(capture => capture.name === (targetCaptureName ?? 'target'))
-               .forEach(capture => results.push(capture.node));
+        matches
+            .filter((match) => match.pattern === targetMatchIndex)
+            .flatMap((match) => match.captures)
+            .filter((capture) => capture.name === (targetCaptureName ?? 'target'))
+            .forEach((capture) => results.push(capture.node));
         return results;
     }
 
@@ -225,7 +227,7 @@ export abstract class ScanRule implements ScanRuleProperties {
      */
     private performCount(nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
         const resultMap = new Map<string, SyntaxNode[]>();
-        nodes.forEach(node => {
+        nodes.forEach((node) => {
             const type = node.type;
             const existing = resultMap.get(type) ?? [];
             existing.push(node);
