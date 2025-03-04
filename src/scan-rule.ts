@@ -198,9 +198,9 @@ export abstract class ScanRule implements ScanRuleProperties {
             return this.validateCaptures(query.captures(rootNode), targetCaptureName);
         }
         matches
-            .filter((match) => match.pattern === targetMatchIndex)
-            .flatMap((match) => match.captures)
-            .filter((capture) => capture.name === (targetCaptureName ?? 'target'))
+            .filter((match: QueryMatch) => match.pattern === targetMatchIndex)
+            .flatMap((match: QueryMatch) => match.captures)
+            .filter((capture: QueryCapture) => capture.name === (targetCaptureName ?? 'target'))
             .forEach((capture) => results.push(capture.node));
         return results;
     }
