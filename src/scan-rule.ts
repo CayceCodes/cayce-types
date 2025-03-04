@@ -1,7 +1,9 @@
-import Parser, { QueryCapture, QueryMatch, SyntaxNode } from 'tree-sitter';
-import ScanRuleProperties from './scan-rule-properties.js';
-import ScanResult from './scan-result.js';
+import Parser, { Language, QueryCapture, QueryMatch, SyntaxNode } from 'tree-sitter';
 import * as TreeSitter from 'tree-sitter';
+import TsSfApex from 'tree-sitter-sfapex';
+import ScanResult from './ScanResult.js';
+import ScanRuleProperties from './ScanRuleProperties.js';
+
 
 /**
  * Decorator for adding a message property to a ScanRule class.
@@ -37,19 +39,9 @@ export function category(category: string) {
  * Decorator for defining the Tree-sitter query associated with a ScanRule class.
  * The query is used to identify the syntax nodes of interest in the source code.
  */
-export function query(query: string) {
+export function treeQuery(treeQuery: string) {
     return function (target: { prototype: ScanRuleProperties }) {
-        target.prototype.Query = query;
-    };
-}
-
-/**
- * Decorator for specifying a regular expression to be used in conjunction with a Tree-sitter query.
- * This allows for additional filtering or matching based on textual patterns within the nodes identified by the query.
- */
-export function regex(regex: string) {
-    return function (target: { prototype: ScanRuleProperties }) {
-        target.prototype.RegEx = regex;
+        target.prototype.TreeQuery = treeQuery;
     };
 }
 
@@ -60,16 +52,6 @@ export function regex(regex: string) {
 export function suggestion(suggestion: string) {
     return function (target: { prototype: ScanRuleProperties }) {
         target.prototype.Suggestion = suggestion;
-    };
-}
-
-/**
- * Decorator for setting the priority of a ScanRule class.
- * Priority indicates the importance or severity of the rule's findings.
- */
-export function priority(priority: number) {
-    return function (target: { prototype: ScanRuleProperties }) {
-        target.prototype.Priority = priority;
     };
 }
 
@@ -97,142 +79,49 @@ export function resultType(resultType: number) {
  * Base class for defining scan rules. Scan rules are used to identify patterns or issues in source code
  * by leveraging Tree-sitter queries and additional logic for validation and measurement.
  */
-export abstract class ScanRule implements ScanRuleProperties {
-    Node!: SyntaxNode;
+export abstract class ScanRule implements ScanRuleProperties  {
     ResultType!: number;
     Message!: string;
     Category!: string;
     Priority!: number;
     Suggestion!: string;
     Name!: string;
-    Query!: string;
-    RegEx!: string;
+    TreeQuery!: string;
     Context!: string;
-    SourceCode!: string;
+    TreeSitterLanguage: Language;
 
-    private configuration: Map<string, string>;
+    private targetSource!: string;
 
-    /**
-     * Sets the configuration map for the rule instance.
-     * Configuration can include rule-specific settings or parameters.
-     */
-    setConfiguration(config: Map<string, string>) {
-        this.configuration = config;
-    }
-
-    /**
-     * Retrieves the entire configuration map for the rule instance.
-     */
-    getConfiguration(): Map<string, string> {
-        return this.configuration;
-    }
-
-    /**
-     * Retrieves a specific configuration value by key.
-     * Returns an empty string if the key does not exist.
-     */
-    getConfigurationValue(keyName: string): string {
-        return this.configuration.get(keyName) ?? '';
-    }
-
-    /**
-     * Sets a specific configuration value by key.
-     */
-    setConfigurationValue(keyName: string, value: string): void {
-        this.configuration.set(keyName, value);
-    }
 
     constructor() {
-        this.configuration = new Map<string, string>();
-    }
-
-    /**
-     * Optional method for pre-filtering nodes before further processing.
-     * Can be overridden to customize the selection of nodes based on specific criteria.
-     */
-    preFilter(rawRoot: SyntaxNode): SyntaxNode {
-        return rawRoot;
-    }
-
-    /**
-     * Validates the root node after an initial query and optional pre-filtering.
-     * Can be overridden to apply custom validation logic at the root level.
-     */
-    validateRoot(rootNode: SyntaxNode): SyntaxNode {
-        return rootNode;
-    }
-
-    /**
-     * Validates a collection of nodes identified by the Tree-sitter query.
-     * Can be overridden to perform custom validation or analysis on each node.
-     */
-    validateNodes(_nodes: SyntaxNode[]): ScanResult[] {
-        return [];
-    }
-
-    /**
-     * Validates captures from a Tree-sitter query, allowing for targeted inspection of specific nodes.
-     * Can be overridden for custom logic based on named captures within a query.
-     */
-    private validateCaptures(captures: QueryCapture[], targetCaptureName?: string): Parser.SyntaxNode[] {
-        const results: Parser.SyntaxNode[] = [];
-        captures
-            .filter((capture) => capture.name === (targetCaptureName ?? 'target'))
-            .forEach((capture) => results.push(capture.node));
-        return results;
+        this.TreeSitterLanguage = TsSfApex.apex;
     }
 
     /**
      * Primary method for validating query matches, intended to replace individual validate methods.
      * Supports complex validation scenarios involving multiple captures and matches.
      */
-    validateQuery(
-        query: TreeSitter.Query,
-        rootNode: Parser.SyntaxNode,
-        targetCaptureName?: string,
-        targetMatchIndex?: number
+    validate(
+        targetSource: string,
+        parser: Parser
     ): Parser.SyntaxNode[] {
+        this.targetSource = targetSource;
+        parser.setLanguage(this.TreeSitterLanguage);
+        const rootTree: Parser.Tree = parser.parse(targetSource);
+        const queryInstance: TreeSitter.Query = new TreeSitter.Query(this.TreeSitterLanguage, this.TreeQuery);
         const results: Parser.SyntaxNode[] = [];
-        const matches: QueryMatch[] = query.matches(rootNode);
-        if (targetMatchIndex === -1) {
-            return this.validateCaptures(query.captures(rootNode), targetCaptureName);
-        }
-        matches
-            .filter((match: QueryMatch) => match.pattern === targetMatchIndex)
-            .flatMap((match: QueryMatch) => match.captures)
-            .filter((capture: QueryCapture) => capture.name === (targetCaptureName ?? 'target'))
-            .forEach((capture) => results.push(capture.node));
+        const captures: QueryCapture[] = queryInstance.captures(rootTree.rootNode);
+        captures.forEach((capture) => {
+            results.push(capture.node);
+        });
         return results;
     }
 
-    /**
-     * Inspects a single node for compliance with the rule.
-     * Can be overridden to define custom logic for evaluating individual nodes.
-     */
-    validateNode(_node: SyntaxNode): ScanResult[] {
-        return [];
+    filterResults(results: ScanResult[]): ScanResult[] {
+        return results;
     }
 
-    /**
-     * Method for measuring aspects of the code, such as counts of specific node types.
-     * Can be overridden to implement custom measurement logic.
-     */
-    measureNodes(_nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
-        return new Map<string, SyntaxNode[]>();
-    }
-
-    /**
-     * Helper method for performing counts of nodes by their type.
-     * Used internally by measureNodes to aggregate node counts.
-     */
-    private performCount(nodes: SyntaxNode[]): Map<string, SyntaxNode[]> {
-        const resultMap = new Map<string, SyntaxNode[]>();
-        nodes.forEach((node) => {
-            const type = node.type;
-            const existing = resultMap.get(type) ?? [];
-            existing.push(node);
-            resultMap.set(type, existing);
-        });
-        return resultMap;
+    getSource(): string{
+        return this.targetSource;
     }
 }
