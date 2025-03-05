@@ -1,4 +1,4 @@
-import Parser, { SyntaxNode } from 'tree-sitter';
+import Parser from 'tree-sitter';
 import { ScanRule } from './scan-rule.js';
 
 /**
@@ -8,12 +8,12 @@ import { ScanRule } from './scan-rule.js';
  */
 export abstract class ScanMetric {
     result: ResultType;
-    sourceNode: SyntaxNode;
+    // sourceNode: SyntaxNode;
     rule: ScanRule;
 
     protected constructor(createdByRule: ScanRule) {
         this.result = createdByRule.ResultType;
-        this.sourceNode = createdByRule.Node;
+        // this.sourceNode = createdByRule.Node;
         this.rule = createdByRule;
     }
 }
@@ -24,8 +24,8 @@ export abstract class ScanMetric {
  */
 export default class ScanResult implements ScanMetric {
     readonly rule: ScanRule;
-    readonly sourceNode: Parser.SyntaxNode;
-    readonly sourceCode: string;
+    // readonly sourceNode: Parser.SyntaxNode;
+    // readonly sourceCode: string;
     readonly metadata: string[];
     readonly result: ResultType;
     /**
@@ -33,12 +33,12 @@ export default class ScanResult implements ScanMetric {
      * This is primarily used to capture and report details about scan findings.
      * @param rule The rule that was violated or triggered this scan result.
      * @param resultType The type of result (e.g., violation, warning).
-     * @param targetNode The syntax node in the source code where the issue was found.
+     * @param _targetNode The syntax node in the source code where the issue was found.
      * @param metadata Additional information relevant to the scan result.
      */
-    constructor(rule: ScanRule, resultType?: ResultType, targetNode?: Parser.SyntaxNode, metadata?: string[]) {
-        this.sourceNode = targetNode ?? rule.Node;
-        this.sourceCode = rule.SourceCode;
+    constructor(rule: ScanRule, resultType?: ResultType, _targetNode?: Parser.SyntaxNode, metadata?: string[]) {
+        // this.sourceNode = targetNode ?? rule.Node;
+        // this.sourceCode = rule.SourceCode;
         this.rule = rule;
         this.result = resultType ?? ResultType.VIOLATION;
         this.metadata = metadata ?? [];

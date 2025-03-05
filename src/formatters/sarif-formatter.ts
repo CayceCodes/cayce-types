@@ -28,10 +28,10 @@ export class SarifFormatter implements Formatter<OutputFormat.Sarif | OutputForm
                             {
                                 physicalLocation: {
                                     artifactLocation: {
-                                        uri: result.sourceNode,
+                                        uri: '', //result.sourceNode,
                                     },
                                     region: {
-                                        startLine: result.sourceNode,
+                                        startLine: '', //result.sourceNode,
                                     },
                                 },
                             },

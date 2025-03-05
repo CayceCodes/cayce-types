@@ -11,7 +11,7 @@ export default interface ScanRuleProperties {
     Message: string;
     Suggestion: string;
     Priority: number;
-    Query: string;
+    TreeQuery: string;
     RegEx?: string;
     ResultType: ResultType;
 }
