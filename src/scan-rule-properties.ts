@@ -1,4 +1,4 @@
-import { ResultType } from './scan-result.js';
+import { RuleSeverity } from './rule-severity.js';
 
 /**
  * This interface is responsible for defining the *configuration* properties of a scan rule.
@@ -12,6 +12,5 @@ export default interface ScanRuleProperties {
     Suggestion: string;
     Priority: number;
     TreeQuery: string;
-    RegEx?: string;
-    ResultType: ResultType;
+    RuleSeverity: RuleSeverity;
 }

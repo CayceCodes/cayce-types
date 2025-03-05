@@ -2,6 +2,7 @@ import Parser, { Language, QueryCapture } from 'tree-sitter';
 import * as TreeSitter from 'tree-sitter';
 import TsSfApex from 'tree-sitter-sfapex';
 import ScanResult from './scan-result.js';
+import { RuleSeverity } from './rule-severity.js';
 import ScanRuleProperties from './scan-rule-properties.js';
 
 /**
@@ -68,9 +69,9 @@ export function context(context: string) {
  * Decorator for assigning a result type to a ScanRule class.
  * Result types categorize the outcomes of applying the rule, such as violations or informational findings.
  */
-export function resultType(resultType: number) {
+export function ruleSeverity(ruleSeverity: RuleSeverity) {
     return function (target: { prototype: ScanRuleProperties }) {
-        target.prototype.ResultType = resultType;
+        target.prototype.RuleSeverity = ruleSeverity;
     };
 }
 
@@ -79,7 +80,7 @@ export function resultType(resultType: number) {
  * by leveraging Tree-sitter queries and additional logic for validation and measurement.
  */
 export abstract class ScanRule implements ScanRuleProperties {
-    ResultType!: number;
+    RuleSeverity!: number;
     Message!: string;
     Category!: string;
     Priority!: number;

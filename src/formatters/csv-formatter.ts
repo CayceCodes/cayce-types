@@ -1,5 +1,6 @@
 import { Formatter, OutputFormat } from '../formatter.js';
-import ScanResult, { ResultType } from '../scan-result.js';
+import ScanResult from '../scan-result.js';
+import { RuleSeverity } from '../rule-severity.js';
 
 export class CsvFormatter<T> implements Formatter<T> {
     private output: string[] = [];
@@ -28,7 +29,7 @@ export class CsvFormatter<T> implements Formatter<T> {
             const rowValues = Object.values(result)
                 .slice(1, -1) // exclude metadata and result
                 .map((value) =>
-                    value === ResultType.VIOLATION
+                    value === RuleSeverity.VIOLATION
                         ? 'true'
                         : value === 0 || value === null || value === undefined
                           ? ''
