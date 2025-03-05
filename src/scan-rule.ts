@@ -1,9 +1,8 @@
-import Parser, { Language, QueryCapture, QueryMatch, SyntaxNode } from 'tree-sitter';
+import Parser, { Language, QueryCapture } from 'tree-sitter';
 import * as TreeSitter from 'tree-sitter';
 import TsSfApex from 'tree-sitter-sfapex';
-import ScanResult from './ScanResult.js';
-import ScanRuleProperties from './ScanRuleProperties.js';
-
+import ScanResult from './scan-result.js';
+import ScanRuleProperties from './scan-rule-properties.js';
 
 /**
  * Decorator for adding a message property to a ScanRule class.
@@ -79,7 +78,7 @@ export function resultType(resultType: number) {
  * Base class for defining scan rules. Scan rules are used to identify patterns or issues in source code
  * by leveraging Tree-sitter queries and additional logic for validation and measurement.
  */
-export abstract class ScanRule implements ScanRuleProperties  {
+export abstract class ScanRule implements ScanRuleProperties {
     ResultType!: number;
     Message!: string;
     Category!: string;
@@ -92,8 +91,7 @@ export abstract class ScanRule implements ScanRuleProperties  {
 
     private targetSource!: string;
 
-
-    constructor() {
+    protected constructor() {
         this.TreeSitterLanguage = TsSfApex.apex;
     }
 
@@ -101,10 +99,7 @@ export abstract class ScanRule implements ScanRuleProperties  {
      * Primary method for validating query matches, intended to replace individual validate methods.
      * Supports complex validation scenarios involving multiple captures and matches.
      */
-    validate(
-        targetSource: string,
-        parser: Parser
-    ): Parser.SyntaxNode[] {
+    validate(targetSource: string, parser: Parser): Parser.SyntaxNode[] {
         this.targetSource = targetSource;
         parser.setLanguage(this.TreeSitterLanguage);
         const rootTree: Parser.Tree = parser.parse(targetSource);
@@ -121,7 +116,7 @@ export abstract class ScanRule implements ScanRuleProperties  {
         return results;
     }
 
-    getSource(): string{
+    getSource(): string {
         return this.targetSource;
     }
 }
