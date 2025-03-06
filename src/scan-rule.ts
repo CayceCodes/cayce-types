@@ -88,22 +88,20 @@ export abstract class ScanRule implements ScanRuleProperties {
     Name!: string;
     TreeQuery!: string;
     Context!: string;
-    TreeSitterLanguage: Language;
+    TreeSitterLanguage!: Language;
 
-    private targetSource!: string;
+    protected rawSource!: string;
 
-    protected constructor() {
-        this.TreeSitterLanguage = TsSfApex.apex;
-    }
+    constructor() {}
 
     /**
      * Primary method for validating query matches, intended to replace individual validate methods.
      * Supports complex validation scenarios involving multiple captures and matches.
      */
     validate(targetSource: string, parser: Parser): Parser.SyntaxNode[] {
-        this.targetSource = targetSource;
+        this.rawSource = targetSource;
         parser.setLanguage(this.TreeSitterLanguage);
-        const rootTree: Parser.Tree = parser.parse(targetSource);
+        const rootTree: Parser.Tree = parser.parse(this.rawSource);
         const queryInstance: TreeSitter.Query = new TreeSitter.Query(this.TreeSitterLanguage, this.TreeQuery);
         const results: Parser.SyntaxNode[] = [];
         const captures: QueryCapture[] = queryInstance.captures(rootTree.rootNode);
@@ -118,6 +116,6 @@ export abstract class ScanRule implements ScanRuleProperties {
     }
 
     getSource(): string {
-        return this.targetSource;
+        return this.rawSource;
     }
 }
