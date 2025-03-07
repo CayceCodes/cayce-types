@@ -1,6 +1,4 @@
-import Parser, { Language, QueryCapture } from 'tree-sitter';
-import * as TreeSitter from 'tree-sitter';
-import TsSfApex from 'tree-sitter-sfapex';
+import Parser, { Language, QueryCapture, Query } from 'tree-sitter';
 import ScanResult from './scan-result.js';
 import { RuleSeverity } from './rule-severity.js';
 import ScanRuleProperties from './scan-rule-properties.js';
@@ -92,7 +90,7 @@ export abstract class ScanRule implements ScanRuleProperties {
 
     protected rawSource!: string;
 
-    constructor() {}
+    // protected constructor() {}
 
     /**
      * Primary method for validating query matches, intended to replace individual validate methods.
@@ -102,7 +100,7 @@ export abstract class ScanRule implements ScanRuleProperties {
         this.rawSource = targetSource;
         parser.setLanguage(this.TreeSitterLanguage);
         const rootTree: Parser.Tree = parser.parse(this.rawSource);
-        const queryInstance: TreeSitter.Query = new TreeSitter.Query(this.TreeSitterLanguage, this.TreeQuery);
+        const queryInstance: Query = new Query(this.TreeSitterLanguage, this.TreeQuery);
         const results: Parser.SyntaxNode[] = [];
         const captures: QueryCapture[] = queryInstance.captures(rootTree.rootNode);
         captures.forEach((capture) => {

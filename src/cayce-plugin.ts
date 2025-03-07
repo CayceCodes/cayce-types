@@ -37,8 +37,6 @@ export interface CaycePlugin {
  *
  */
 export abstract class CayceBasePlugin implements CaycePlugin {
-
-
     /**
      * This method is used to get the package name of the plugin. It reads the package.json file of the plugin
      * @returns {string}
@@ -55,23 +53,15 @@ export abstract class CayceBasePlugin implements CaycePlugin {
         }
     }
 
-
     abstract getLanguage(): TreeSitter.Language;
 
-    getRules(): ScanRule[]{
+    getRules(): ScanRule[] {
         const rules: ScanRule[] = this.registerRules();
-        rules.forEach(rule => {
+        rules.forEach((rule) => {
             rule.TreeSitterLanguage = this.getLanguage();
         });
         return rules;
     }
 
     abstract registerRules(): ScanRule[];
-
-    // /**
-    //  * This method is used to get the rules that the plugin provides.
-    //  * The rules are defined in the plugin and are returned by this method that plugin developers must implement.
-    //  * @returns {ScanRule[]}
-    //  */
-    // abstract getRules(): ScanRule[];
 }
