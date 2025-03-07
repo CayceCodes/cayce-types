@@ -95,7 +95,7 @@ export abstract class ScanRule implements ScanRuleProperties {
      * Primary method for validating query matches, intended to replace individual validate methods.
      * Supports complex validation scenarios involving multiple captures and matches.
      */
-    async validate(targetSource: string, parser: Parser): Promise<Parser.SyntaxNode[]> {
+    validate(targetSource: string, parser: Parser): Parser.SyntaxNode[] {
         this.rawSource = targetSource;
         parser.setLanguage(this.TreeSitterLanguage);
         const rootTree: Parser.Tree = parser.parse(this.rawSource);
