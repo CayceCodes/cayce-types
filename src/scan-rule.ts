@@ -1,5 +1,4 @@
 import Parser, { Language, QueryCapture, Query } from 'tree-sitter';
-import ScanResult from './scan-result.js';
 import { RuleSeverity } from './rule-severity.js';
 import ScanRuleProperties from './scan-rule-properties.js';
 
@@ -96,7 +95,7 @@ export abstract class ScanRule implements ScanRuleProperties {
      * Primary method for validating query matches, intended to replace individual validate methods.
      * Supports complex validation scenarios involving multiple captures and matches.
      */
-    validate(targetSource: string, parser: Parser): Parser.SyntaxNode[] {
+    async validate(targetSource: string, parser: Parser): Promise<Parser.SyntaxNode[]> {
         this.rawSource = targetSource;
         parser.setLanguage(this.TreeSitterLanguage);
         const rootTree: Parser.Tree = parser.parse(this.rawSource);
@@ -106,10 +105,6 @@ export abstract class ScanRule implements ScanRuleProperties {
         captures.forEach((capture) => {
             results.push(capture.node);
         });
-        return results;
-    }
-
-    filterResults(results: ScanResult[]): ScanResult[] {
         return results;
     }
 
