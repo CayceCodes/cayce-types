@@ -1,6 +1,6 @@
 {
   "name": "cayce-types",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "type": "module",
   "description": "Shared types for Cayce - an Opinionated Static Analysis Tool based on TreeSitter.",
   "main": "dist/index.js",
