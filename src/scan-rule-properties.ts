@@ -5,6 +5,7 @@ import { RuleSeverity } from './rule-severity.js';
  * These properties are all exposed via ScanRule as decorators.
  */
 export default interface ScanRuleProperties {
+    Id: string;
     Name: string;
     Category: string;
     Context: string;

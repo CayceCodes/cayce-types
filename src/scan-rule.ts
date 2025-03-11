@@ -13,6 +13,16 @@ export function message(message: string) {
 }
 
 /**
+ * Decorator for setting a unique identifier for a ScanRule class.
+ * The ID is used to reference and manage the rule within the system.
+ */
+export function id(id: string) {
+    return function (target: { prototype: ScanRuleProperties }) {
+        target.prototype.Id = id;
+    };
+}
+
+/**
  * Decorator for setting a human-readable name for a ScanRule class.
  * This name gives an overview of the rule's intent.
  */
@@ -77,6 +87,7 @@ export function ruleSeverity(ruleSeverity: RuleSeverity) {
  * by leveraging Tree-sitter queries and additional logic for validation and measurement.
  */
 export abstract class ScanRule implements ScanRuleProperties {
+    Id!: string;
     RuleSeverity!: number;
     Message!: string;
     Category!: string;
