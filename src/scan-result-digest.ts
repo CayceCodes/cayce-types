@@ -1,17 +1,14 @@
-import Parser from "tree-sitter";
-import { ScanRule } from "./scan-rule.js";
-
 /**
  * @description Interface that encapsulates the information useful when reporting on the result of a scan.
  */
-export default interface ScanResultDigest{
+export default interface ScanResultDigest {
     RuleId: string;
-    Start:{
+    Start: {
         Row: number;
         Column: number;
         Index: number;
     };
-    End:{
+    End: {
         Row: number;
         Column: number;
         Index: number;
@@ -23,4 +20,3 @@ export default interface ScanResultDigest{
     Context: string;
     NodeText?: string;
 }
-

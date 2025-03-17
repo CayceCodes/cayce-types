@@ -27,5 +27,5 @@ export {
     JsonFormatter,
     SarifFormatter,
     XmlFormatter,
-    ScanResultDigest
+    ScanResultDigest,
 };

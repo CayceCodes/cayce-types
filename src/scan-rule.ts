@@ -123,26 +123,26 @@ export abstract class ScanRule implements ScanRuleProperties {
         return results;
     }
 
-    protected buildScanResult(node: Parser.SyntaxNode){
+    protected buildScanResult(node: Parser.SyntaxNode) {
         const digestValue: ScanResultDigest = {
             RuleId: this.Id,
             Start: {
                 Column: node.startPosition.column,
                 Row: node.startPosition.row,
-                Index: node.startIndex
+                Index: node.startIndex,
             },
             End: {
                 Column: node.endPosition.column,
                 Row: node.endPosition.row,
-                Index: node.endIndex
+                Index: node.endIndex,
             },
             Suggestion: this.Suggestion,
             Message: this.Message,
-            Category: this.Category ?? '',
+            Category: this.Category,
             Severity: this.RuleSeverity.valueOf(),
             Context: this.Context,
-            NodeText: node.text
-        }
+            NodeText: node.text,
+        };
         return digestValue;
     }
 
