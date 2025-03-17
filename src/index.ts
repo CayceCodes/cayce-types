@@ -1,5 +1,5 @@
 import ScanResult from './scan-result.js';
-import { ScanRule, id, context, message, name, suggestion, category, treeQuery, ruleSeverity } from './scan-rule.js';
+import { ScanRule, context, id, message, name, suggestion, category, treeQuery, ruleSeverity } from './scan-rule.js';
 import { RuleSeverity } from './rule-severity.js';
 import { CaycePlugin, CayceBasePlugin } from './cayce-plugin.js';
 import { Formatter, OutputFormat } from './formatter.js';
