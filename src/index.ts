@@ -1,4 +1,4 @@
-import ScanResult from './scan-result.js';
+import ScanResultDigest from './scan-result-digest.js';
 import { ScanRule, context, id, message, name, suggestion, category, treeQuery, ruleSeverity } from './scan-rule.js';
 import { RuleSeverity } from './rule-severity.js';
 import { CaycePlugin, CayceBasePlugin } from './cayce-plugin.js';
@@ -9,7 +9,6 @@ import { SarifFormatter } from './formatters/sarif-formatter.js';
 import { XmlFormatter } from './formatters/xml-formatter.js';
 
 export {
-    ScanResult,
     ScanRule,
     CaycePlugin,
     CayceBasePlugin,
@@ -28,4 +27,5 @@ export {
     JsonFormatter,
     SarifFormatter,
     XmlFormatter,
+    ScanResultDigest
 };
