@@ -107,7 +107,7 @@ export abstract class ScanRule implements ScanRuleProperties {
      * Primary method for validating query matches, intended to replace individual validate methods.
      * Supports complex validation scenarios involving multiple captures and matches.
      */
-    validate(targetSource: string, oldParser?: Parser): ScanResultDigest[] {
+    validate(targetSource: string): ScanResultDigest[] {
         this.rawSource = targetSource;
         const parser: Parser = new Parser();
         parser.setLanguage(this.TreeSitterLanguage);
@@ -141,6 +141,7 @@ export abstract class ScanRule implements ScanRuleProperties {
             Category: this.Category ?? '',
             Severity: this.RuleSeverity.valueOf(),
             Context: this.Context,
+            NodeText: node.text
         }
         return digestValue;
     }

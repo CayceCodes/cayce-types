@@ -21,5 +21,6 @@ export default interface ScanResultDigest{
     Severity: number;
     Category?: string;
     Context: string;
+    NodeText?: string;
 }
 
