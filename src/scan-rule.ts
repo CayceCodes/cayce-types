@@ -1,6 +1,7 @@
 import Parser, { Language, QueryCapture, Query } from 'tree-sitter';
 import { RuleSeverity } from './rule-severity.js';
 import ScanRuleProperties from './scan-rule-properties.js';
+import ScanResultDigest from './scan-result-digest.js';
 
 /**
  * Decorator for adding a message property to a ScanRule class.
@@ -106,20 +107,42 @@ export abstract class ScanRule implements ScanRuleProperties {
      * Primary method for validating query matches, intended to replace individual validate methods.
      * Supports complex validation scenarios involving multiple captures and matches.
      */
-    validate(targetSource: string, oldParser: Parser): Parser.SyntaxNode[] {
+    validate(targetSource: string, oldParser?: Parser): ScanResultDigest[] {
         this.rawSource = targetSource;
         const parser: Parser = new Parser();
         parser.setLanguage(this.TreeSitterLanguage);
         const rootTree: Parser.Tree = parser.parse(this.rawSource);
         const queryInstance: Query = new Query(this.TreeSitterLanguage, this.TreeQuery);
-        const results: Parser.SyntaxNode[] = [];
+        const results: ScanResultDigest[] = [];
         const captures: QueryCapture[] = queryInstance.captures(rootTree.rootNode);
         captures.forEach((capture) => {
             if (capture.name.startsWith('target')) {
-                results.push(capture.node);
+                results.push(this.buildScanResult(capture.node));
             }
         });
         return results;
+    }
+
+    protected buildScanResult(node: Parser.SyntaxNode){
+        const digestValue: ScanResultDigest = {
+            RuleId: this.Id,
+            Start: {
+                Column: node.startPosition.column,
+                Row: node.startPosition.row,
+                Index: node.startIndex
+            },
+            End: {
+                Column: node.endPosition.column,
+                Row: node.endPosition.row,
+                Index: node.endIndex
+            },
+            Suggestion: this.Suggestion,
+            Message: this.Message,
+            Category: this.Category ?? '',
+            Severity: this.RuleSeverity.valueOf(),
+            Context: this.Context,
+        }
+        return digestValue;
     }
 
     getSource(): string {
