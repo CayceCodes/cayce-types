@@ -150,16 +150,5 @@ export abstract class ScanRule implements ScanRuleProperties {
         return this.rawSource;
     }
     
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    nodeHasScanDirective(baseNode: Parser.SyntaxNode, annotationName: string, argumentCount: number): boolean{
-        let result: boolean = false;
-        baseNode.descendantsOfType('annotation').forEach(annotationNode=>{
-            if(annotationNode.text === annotationName){
-                if(annotationNode.childForFieldName('annotation_argument_list')?.childCount === argumentCount){
-                    return true;
-                }
-            }
-        })
-        return false;
-    }
+
 }
