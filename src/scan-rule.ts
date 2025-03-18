@@ -138,7 +138,7 @@ export abstract class ScanRule implements ScanRuleProperties {
             },
             Suggestion: this.Suggestion,
             Message: this.Message,
-            Category: this.Category ?? '',
+            Category: this.Category,
             Severity: this.RuleSeverity.valueOf(),
             Context: this.Context,
             NodeText: node.text
@@ -148,5 +148,18 @@ export abstract class ScanRule implements ScanRuleProperties {
 
     getSource(): string {
         return this.rawSource;
+    }
+    
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    nodeHasScanDirective(baseNode: Parser.SyntaxNode, annotationName: string, argumentCount: number): boolean{
+        let result: boolean = false;
+        baseNode.descendantsOfType('annotation').forEach(annotationNode=>{
+            if(annotationNode.text === annotationName){
+                if(annotationNode.childForFieldName('annotation_argument_list')?.childCount === argumentCount){
+                    return true;
+                }
+            }
+        })
+        return false;
     }
 }

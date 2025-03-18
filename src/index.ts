@@ -7,12 +7,14 @@ import { CsvFormatter } from './formatters/csv-formatter.js';
 import { JsonFormatter } from './formatters/json-formatter.js';
 import { SarifFormatter } from './formatters/sarif-formatter.js';
 import { XmlFormatter } from './formatters/xml-formatter.js';
+import RuleTestCase from './rule-test-case.js';
 
 export {
     ScanRule,
     CaycePlugin,
     CayceBasePlugin,
     RuleSeverity,
+    RuleTestCase,
     id,
     context,
     message,
