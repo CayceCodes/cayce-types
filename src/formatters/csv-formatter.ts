@@ -16,14 +16,18 @@ export class CsvFormatter extends BaseFormatter<OutputFormat.Csv> {
     supportsOutputFormat(outputFormatType: OutputFormat): boolean {
         return outputFormatType === OutputFormat.Csv;
     }
-    
+
     getFileExtension(): string {
         return 'csv';
     }
 
-    format(scanResults: ScanResult[] | ScanResultDigest[], _outputFormat: OutputFormat.Csv, outputFilename?: string): string {
+    format(
+        scanResults: ScanResult[] | ScanResultDigest[],
+        _outputFormat: OutputFormat.Csv,
+        outputFilename?: string
+    ): string {
         const digestResults = this.validateScanResultDigests(scanResults);
-        
+
         if (digestResults.length === 0) {
             return '';
         }

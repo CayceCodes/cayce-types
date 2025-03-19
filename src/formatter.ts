@@ -25,7 +25,7 @@ export abstract class BaseFormatter<T> implements Formatter<T> {
     abstract getSupportedOutputFormats(): OutputFormat[];
     abstract getName(): string;
     abstract getFileExtension(): string;
-    
+
     protected writeToFile(content: string, filename: string, extension: string): void {
         try {
             // Ensure filename has the correct extension
@@ -41,19 +41,21 @@ export abstract class BaseFormatter<T> implements Formatter<T> {
 
             fs.writeFileSync(filename, content, 'utf8');
         } catch (error) {
-            console.error(`Error writing ${extension.toUpperCase()} file: ${error instanceof Error ? error.message : String(error)}`);
+            console.error(
+                `Error writing ${extension.toUpperCase()} file: ${error instanceof Error ? error.message : String(error)}`
+            );
         }
     }
-    
+
     protected validateScanResultDigests(results: ScanResult[] | ScanResultDigest[]): ScanResultDigest[] {
         // Check if results are ScanResultDigest objects
         if (results.length === 0 || this.isScanResultDigest(results[0])) {
             return results as ScanResultDigest[];
         }
-        
+
         throw new Error(`Formatter ${this.getName()} only supports ScanResultDigest objects`);
     }
-    
+
     private isScanResultDigest(result: ScanResult | ScanResultDigest): result is ScanResultDigest {
         return 'RuleId' in result && 'Start' in result && 'End' in result;
     }

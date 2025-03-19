@@ -4,15 +4,19 @@ import ScanResult from '../scan-result.js';
 import ScanResultDigest from '../scan-result-digest.js';
 
 export class XmlFormatter extends BaseFormatter<OutputFormat.Xml> {
-    format(scanResults: ScanResult[] | ScanResultDigest[], _outputFormat: OutputFormat.Xml, outputFilename?: string): string {
+    format(
+        scanResults: ScanResult[] | ScanResultDigest[],
+        _outputFormat: OutputFormat.Xml,
+        outputFilename?: string
+    ): string {
         const digestResults = this.validateScanResultDigests(scanResults);
         const jsonString = JSON.stringify({ scanResults: digestResults }, null, 2);
         const xmlContent = this.jsonToXml(JSON.parse(jsonString) as JSONObject);
-        
+
         if (outputFilename) {
             this.writeToFile(xmlContent, outputFilename, this.getFileExtension());
         }
-        
+
         return xmlContent;
     }
 
@@ -27,7 +31,7 @@ export class XmlFormatter extends BaseFormatter<OutputFormat.Xml> {
     getName(): string {
         return 'XML';
     }
-    
+
     getFileExtension(): string {
         return 'xml';
     }

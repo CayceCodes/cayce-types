@@ -4,12 +4,12 @@ import ScanResultDigest from '../scan-result-digest.js';
 
 export class SarifFormatter extends BaseFormatter<OutputFormat.Sarif | OutputFormat.Sarifv2> {
     format(
-        scanResults: ScanResult[] | ScanResultDigest[], 
+        scanResults: ScanResult[] | ScanResultDigest[],
         _outputFormat: OutputFormat.Sarif | OutputFormat.Sarifv2,
         outputFilename?: string
     ): string {
         const digestResults = this.validateScanResultDigests(scanResults);
-        
+
         // Convert ScanResultDigest objects to SARIF format
         const sarifObject = {
             $schema: 'https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json',
@@ -45,9 +45,9 @@ export class SarifFormatter extends BaseFormatter<OutputFormat.Sarif | OutputFor
                         ],
                         level: this.getSarifSeverityLevel(digest.Severity),
                         properties: {
-                            category: digest.Category || 'Default',
-                            suggestion: digest.Suggestion || '',
-                            nodeText: digest.NodeText || '',
+                            category: digest.Category ?? 'Default',
+                            suggestion: digest.Suggestion ?? '',
+                            nodeText: digest.NodeText ?? '',
                         },
                     })),
                 },
@@ -55,11 +55,11 @@ export class SarifFormatter extends BaseFormatter<OutputFormat.Sarif | OutputFor
         };
 
         const sarifContent = JSON.stringify(sarifObject, null, 2);
-        
+
         if (outputFilename) {
             this.writeToFile(sarifContent, outputFilename, this.getFileExtension());
         }
-        
+
         return sarifContent;
     }
 
@@ -74,11 +74,11 @@ export class SarifFormatter extends BaseFormatter<OutputFormat.Sarif | OutputFor
     getName(): string {
         return 'SARIF';
     }
-    
+
     getFileExtension(): string {
         return 'sarif';
     }
-    
+
     private getSarifSeverityLevel(severity: number): string {
         // Map severity to SARIF severity levels
         if (severity >= 8) return 'error';
