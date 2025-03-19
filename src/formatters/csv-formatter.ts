@@ -1,12 +1,12 @@
-import { Formatter, OutputFormat } from '../formatter.js';
+import { BaseFormatter, OutputFormat } from '../formatter.js';
 import ScanResult from '../scan-result.js';
-import { RuleSeverity } from '../rule-severity.js';
+import ScanResultDigest from '../scan-result-digest.js';
 
-export class CsvFormatter<T> implements Formatter<T> {
+export class CsvFormatter extends BaseFormatter<OutputFormat.Csv> {
     private output: string[] = [];
 
     getName(): string {
-        return 'CSV Formatter';
+        return 'CSV';
     }
 
     getSupportedOutputFormats(): OutputFormat[] {
@@ -16,30 +16,73 @@ export class CsvFormatter<T> implements Formatter<T> {
     supportsOutputFormat(outputFormatType: OutputFormat): boolean {
         return outputFormatType === OutputFormat.Csv;
     }
+    
+    getFileExtension(): string {
+        return 'csv';
+    }
 
-    format(scanResults: ScanResult[], _outputFormat: T): string {
-        const csvHeaders = Object.keys(scanResults[0])
-            .filter((key) => key !== 'metadata')
-            .map((header) => `"${header}"`)
-            .join(',');
+    format(scanResults: ScanResult[] | ScanResultDigest[], _outputFormat: OutputFormat.Csv, outputFilename?: string): string {
+        const digestResults = this.validateScanResultDigests(scanResults);
+        
+        if (digestResults.length === 0) {
+            return '';
+        }
 
-        this.output.push(csvHeaders);
+        this.output = [];
 
-        scanResults.forEach((result) => {
-            const rowValues = Object.values(result)
-                .slice(1, -1) // exclude metadata and result
-                .map((value) =>
-                    value === RuleSeverity.VIOLATION
-                        ? 'true'
-                        : value === 0 || value === null || value === undefined
-                          ? ''
-                          : String(value)
-                )
-                .join(',');
+        // Define headers based on ScanResultDigest interface
+        const headers = [
+            'RuleId',
+            'StartRow',
+            'StartColumn',
+            'StartIndex',
+            'EndRow',
+            'EndColumn',
+            'EndIndex',
+            'Message',
+            'Suggestion',
+            'Severity',
+            'Category',
+            'Context',
+            'NodeText',
+        ];
 
-            this.output.push(`"${rowValues}"`);
+        this.output.push(headers.map((header) => `"${header}"`).join(','));
+
+        // Process each digest into a CSV row
+        digestResults.forEach((digest) => {
+            const row = [
+                `"${this.escapeCsvValue(digest.RuleId)}"`,
+                digest.Start.Row,
+                digest.Start.Column,
+                digest.Start.Index,
+                digest.End.Row,
+                digest.End.Column,
+                digest.End.Index,
+                `"${this.escapeCsvValue(digest.Message)}"`,
+                digest.Suggestion ? `"${this.escapeCsvValue(digest.Suggestion)}"` : '',
+                digest.Severity,
+                digest.Category ? `"${this.escapeCsvValue(digest.Category)}"` : '',
+                `"${this.escapeCsvValue(digest.Context)}"`,
+                digest.NodeText ? `"${this.escapeCsvValue(digest.NodeText)}"` : '',
+            ];
+
+            this.output.push(row.join(','));
         });
 
-        return this.output.join('\n');
+        const csvContent = this.output.join('\n');
+
+        // Write to file if filename is provided
+        if (outputFilename) {
+            this.writeToFile(csvContent, outputFilename, this.getFileExtension());
+        }
+
+        return csvContent;
+    }
+
+    private escapeCsvValue(value: string): string {
+        if (!value) return '';
+        // Escape double quotes by doubling them
+        return value.replace(/"/g, '""');
     }
 }

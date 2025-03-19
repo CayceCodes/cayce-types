@@ -1,11 +1,19 @@
-import { Formatter, OutputFormat } from '../formatter.js';
+import { BaseFormatter, OutputFormat } from '../formatter.js';
 import { JSONObject } from '../json-object.js';
 import ScanResult from '../scan-result.js';
+import ScanResultDigest from '../scan-result-digest.js';
 
-export class XmlFormatter implements Formatter<OutputFormat.Xml> {
-    format(scanResults: ScanResult[], _outputFormat: OutputFormat.Xml): string {
-        const jsonString = JSON.stringify({ scanResults }, null, 2);
-        return this.jsonToXml(JSON.parse(jsonString) as JSONObject);
+export class XmlFormatter extends BaseFormatter<OutputFormat.Xml> {
+    format(scanResults: ScanResult[] | ScanResultDigest[], _outputFormat: OutputFormat.Xml, outputFilename?: string): string {
+        const digestResults = this.validateScanResultDigests(scanResults);
+        const jsonString = JSON.stringify({ scanResults: digestResults }, null, 2);
+        const xmlContent = this.jsonToXml(JSON.parse(jsonString) as JSONObject);
+        
+        if (outputFilename) {
+            this.writeToFile(xmlContent, outputFilename, this.getFileExtension());
+        }
+        
+        return xmlContent;
     }
 
     supportsOutputFormat(outputFormatType: OutputFormat): boolean {
@@ -18,6 +26,10 @@ export class XmlFormatter implements Formatter<OutputFormat.Xml> {
 
     getName(): string {
         return 'XML';
+    }
+    
+    getFileExtension(): string {
+        return 'xml';
     }
 
     private jsonToXml(obj: JSONObject): string {
@@ -32,7 +44,6 @@ export class XmlFormatter implements Formatter<OutputFormat.Xml> {
             if (Array.isArray(obj[key])) {
                 xml += `${indent}<${key}>\n`;
                 for (const item of obj[key]) {
-                    // xml += this.parseObject(item, indent + '  ');
                     if (typeof item === 'object' && item !== null) {
                         xml += this.parseObject(item as JSONObject, indent + '  ');
                     } else {

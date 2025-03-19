@@ -13,4 +13,7 @@ export default {
     }
   },
   extensionsToTreatAsEsm: ['.ts'],
+  moduleNameMapper: {
+    '^(.*)\\.js$': '$1'
+  }
 };

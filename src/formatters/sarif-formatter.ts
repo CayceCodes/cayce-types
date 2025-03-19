@@ -1,10 +1,16 @@
-import { Formatter, OutputFormat } from '../formatter.js';
+import { BaseFormatter, OutputFormat } from '../formatter.js';
 import ScanResult from '../scan-result.js';
+import ScanResultDigest from '../scan-result-digest.js';
 
-export class SarifFormatter implements Formatter<OutputFormat.Sarif | OutputFormat.Sarifv2> {
-    format(scanResults: ScanResult[], _outputFormat: OutputFormat.Sarif | OutputFormat.Sarifv2): string {
-        // This is a placeholder for the actual SARIF formatting logic
-        // You would need to implement the conversion of scanResults to SARIF format here
+export class SarifFormatter extends BaseFormatter<OutputFormat.Sarif | OutputFormat.Sarifv2> {
+    format(
+        scanResults: ScanResult[] | ScanResultDigest[], 
+        _outputFormat: OutputFormat.Sarif | OutputFormat.Sarifv2,
+        outputFilename?: string
+    ): string {
+        const digestResults = this.validateScanResultDigests(scanResults);
+        
+        // Convert ScanResultDigest objects to SARIF format
         const sarifObject = {
             $schema: 'https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json',
             version: '2.1.0',
@@ -17,31 +23,44 @@ export class SarifFormatter implements Formatter<OutputFormat.Sarif | OutputForm
                             rules: [],
                         },
                     },
-                    results: scanResults.map((result) => ({
-                        // Convert each ScanResult to a SARIF result object
-                        // This is just an example and should be adjusted based on your ScanResult structure
-                        ruleId: result,
+                    results: digestResults.map((digest) => ({
+                        ruleId: digest.RuleId,
                         message: {
-                            text: result.rule.Name,
+                            text: digest.Message,
                         },
                         locations: [
                             {
                                 physicalLocation: {
                                     artifactLocation: {
-                                        uri: '', //result.sourceNode,
+                                        uri: digest.Context,
                                     },
                                     region: {
-                                        startLine: '', //result.sourceNode,
+                                        startLine: digest.Start.Row,
+                                        startColumn: digest.Start.Column,
+                                        endLine: digest.End.Row,
+                                        endColumn: digest.End.Column,
                                     },
                                 },
                             },
                         ],
+                        level: this.getSarifSeverityLevel(digest.Severity),
+                        properties: {
+                            category: digest.Category || 'Default',
+                            suggestion: digest.Suggestion || '',
+                            nodeText: digest.NodeText || '',
+                        },
                     })),
                 },
             ],
         };
 
-        return JSON.stringify(sarifObject, null, 2);
+        const sarifContent = JSON.stringify(sarifObject, null, 2);
+        
+        if (outputFilename) {
+            this.writeToFile(sarifContent, outputFilename, this.getFileExtension());
+        }
+        
+        return sarifContent;
     }
 
     supportsOutputFormat(outputFormatType: OutputFormat): boolean {
@@ -54,5 +73,16 @@ export class SarifFormatter implements Formatter<OutputFormat.Sarif | OutputForm
 
     getName(): string {
         return 'SARIF';
+    }
+    
+    getFileExtension(): string {
+        return 'sarif';
+    }
+    
+    private getSarifSeverityLevel(severity: number): string {
+        // Map severity to SARIF severity levels
+        if (severity >= 8) return 'error';
+        if (severity >= 4) return 'warning';
+        return 'note';
     }
 }
