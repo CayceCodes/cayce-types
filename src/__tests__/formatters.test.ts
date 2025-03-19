@@ -5,7 +5,6 @@ import { CsvFormatter } from '../formatters/csv-formatter.js';
 import { OutputFormat } from '../formatter.js';
 import ScanResultDigest from '../scan-result-digest.js';
 import fs from 'fs';
-import path from 'path';
 
 // Mock fs and path modules
 jest.mock('fs', () => ({
@@ -47,10 +46,13 @@ describe('Formatter Tests', () => {
     
     it('should format ScanResultDigest array to JSON string', () => {
       const result = jsonFormatter.format(mockScanResultDigests, OutputFormat.Json);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const parsed = JSON.parse(result);
       
       expect(parsed).toHaveLength(2);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(parsed[0].RuleId).toBe('RULE-001');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(parsed[1].RuleId).toBe('RULE-002');
     });
     
@@ -91,13 +93,20 @@ describe('Formatter Tests', () => {
     
     it('should format ScanResultDigest array to SARIF string', () => {
       const result = sarifFormatter.format(mockScanResultDigests, OutputFormat.Sarif);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const parsed = JSON.parse(result);
       
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(parsed.version).toBe('2.1.0');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(parsed.runs[0].results).toHaveLength(2);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(parsed.runs[0].results[0].ruleId).toBe('RULE-001');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(parsed.runs[0].results[1].ruleId).toBe('RULE-002');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(parsed.runs[0].results[0].level).toBe('error');
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(parsed.runs[0].results[1].level).toBe('warning');
     });
     
